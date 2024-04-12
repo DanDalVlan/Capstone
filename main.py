@@ -18,7 +18,7 @@ df = pd.read_csv(url, names=names)
 # creating a model
 mylog_model = linear_model.LogisticRegression()
 x = df[['Valence', 'Arousal', 'Dominance']]
-y = df[['Track']]
+y = df[:0]
 
 # training the model
 mylog_model.fit(x, y)
