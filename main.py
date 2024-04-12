@@ -8,7 +8,7 @@ from sklearn import linear_model
 # names = ['Track', 'Artist', 'Genre', 'Valence', 'Arousal', 'Dominance']
 # df = pd.read_csv(url, names=names)
 
-url = "https://raw.githubusercontent.com/DanDalVlan/Capstone/working/muse_v3_test_short.csv"
+url = "https://raw.githubusercontent.com/DanDalVlan/Capstone/working/capstone_data_short.csv"
 names = ['Valence', 'Arousal', 'Dominance', 'Track']
 df = pd.read_csv(url, names=names)
 
@@ -29,4 +29,4 @@ x = df.values[:, 0:3]
 mylog_model.fit(x, y)
 
 # making predictions
-print(mylog_model.predict([[2.97, 5.936, 5.214]]))
+print(mylog_model.predict([[3, 5, 5]]))
