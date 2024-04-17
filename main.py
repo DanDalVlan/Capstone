@@ -1,3 +1,6 @@
+import os
+import sys
+
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -8,11 +11,22 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
-# Importing raw data
-url = "data_final_no_headers.csv"
+
+# Get absolute path for pyinstaller to find the csv file
+def resource_path(relative_path):
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
+
+# Importing data
+csv_file_path = resource_path('data_final_no_headers.csv')
 names = ['Radius', 'Texture', 'Perimeter', 'Area', 'Smoothness', 'Compactness', 'Concavity', 'Concave Points',
          'Symmetry', 'Fractal Dimension', 'Diagnosis']
-df = pd.read_csv(url, names=names)
+df = pd.read_csv(csv_file_path, names=names)
 
 # Define the dependent and independent variables
 X = df[['Radius', 'Texture', 'Perimeter', 'Area', 'Smoothness', 'Compactness', 'Concavity', 'Concave Points',
