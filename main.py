@@ -8,13 +8,13 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
-# importing raw data
-url = "https://raw.githubusercontent.com/DanDalVlan/Capstone/working/data_final_no_headers.csv"
+# Importing raw data
+url = "data_final_no_headers.csv"
 names = ['Radius', 'Texture', 'Perimeter', 'Area', 'Smoothness', 'Compactness', 'Concavity', 'Concave Points',
          'Symmetry', 'Fractal Dimension', 'Diagnosis']
 df = pd.read_csv(url, names=names)
 
-# Define the features and target
+# Define the dependent and independent variables
 X = df[['Radius', 'Texture', 'Perimeter', 'Area', 'Smoothness', 'Compactness', 'Concavity', 'Concave Points',
         'Symmetry', 'Fractal Dimension']].values
 y = df['Diagnosis'].values
@@ -46,13 +46,14 @@ def get_valid_input(prompt, min_value, max_value):
 
 # Function that creates and shows the graph of characteristics and their importance to the model
 def importance_graph():
+    # Create a temp linear SVC model for this graph
     svm_graph_model = SVC(kernel='linear', random_state=0)
     svm_graph_model.fit(X_train, y_train)
-
+    # Sort the temp model and assign importance
     tumor_list = df.columns[:-1]
     list_importance = svm_graph_model.coef_[0]
     sorted_list = np.argsort(np.abs(list_importance))
-
+    # Create and display the graph
     plt.figure(figsize=(10, 6))
     plt.barh(range(len(sorted_list)), np.abs(list_importance[sorted_list]), color="blue")
     plt.yticks(range(len(sorted_list)), tumor_list[sorted_list])
@@ -79,16 +80,19 @@ def roc_graph():
 
 # Main Function that contains all user interactions
 class Main:
+    # Print hello plus general info
     print("\nHello and welcome to the McGuffin Institute's Tumor Diagnostic Project")
     print("You will be prompted for the following 10 tumor characteristic values, please ensure you have them on hand:")
     print("1. Radius\n2. Texture\n3. Perimeter\n4. Area\n5. Smoothness\n6. Compactness\n7. Concavity\n8. Concave points"
           "\n9. Symmetry\n10. Fractal Dimension\n")
+
+    # Loop to let the user interact with the menu until they choose to end
     input_selection = 0
     while True:
         input_selection = get_valid_input("\nSelect an option:\n1. Begin Diagnostics\n2. Verify Methodology\n"
                                           "3. End Diagnostics\n", 1, 3)
 
-        # If user selects 'Begin Diagnostic', prompt them for all the inputs and show prediction
+        # If 1, prompt them for all the inputs and show prediction
         if input_selection == 1:
             # Receive inputs from the users
             radius = get_valid_input("1. Radius in mm (mean of distances from center to points on the "
@@ -121,31 +125,33 @@ class Main:
             print("\nOur diagnostic prediction for the tumor whose characteristics were provided is: ", prediction)
             print("This model has an accuracy of: {:.2f}%".format(accuracy))
 
-        # Else if user selects 'Verify Methodology', show next menu for visualizations
+        # Else if 2, show next menu for visualizations
         elif input_selection == 2:
+            # Loop to let the user choose which visuals they want to see, or end loop
             while True:
                 input_visuals = get_valid_input("Which visualization would you like to look at?\n"
                                                 "1. Importance Graph\n2. Pair Plot\n3. ROC Curve\n"
                                                 "4. Return to previous menu\n", 1, 4)
+                # If 1, call function that creates and displays the importance graph
                 if input_visuals == 1:
                     importance_graph()
-
+                # Else if 2, call function that creates and displays pairplot graph
                 elif input_visuals == 2:
                     pairplot_graph()
-
+                # Else if 3, call function that creates and displays ROC curve
                 elif input_visuals == 3:
                     roc_graph()
-
+                # Else if 4, end loop
                 elif input_visuals == 4:
                     break
-
+                # Else tell user their selection is invalid
                 else:
                     print("Invalid selection")
 
-        # Else if user selects 'End Diagnostics', break loop
+        # Else if 3, break loop
         elif input_selection == 3:
             break
 
-        # Else print 'Invalid selection'
+        # Else tell user their selection is invalid
         else:
             print("Invalid selection")
